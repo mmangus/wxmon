@@ -2314,8 +2314,8 @@ Source: https://ww1.microchip.com/downloads/en/DeviceDoc/21294E.pdf</description
 <part name="LDO" library="MCP1700T-3302E_MB" library_urn="urn:adsk.wipprod:fs.file:vf.VrhuzhcoSranKeG5ouOmnw" deviceset="MCP1700T-3302E/MB" device=""/>
 <part name="SUPPLY1" library="Tutorial - Fusion 360" deviceset="GND" device=""/>
 <part name="R2" library="Resistor" deviceset="R-US" device="CHIP-0805(2012-METRIC)" package3d_urn="urn:adsk.eagle:package:16378559/2" technology="_" value="10K"/>
-<part name="R1" library="Resistor" deviceset="R-US" device="CHIP-0805(2012-METRIC)" package3d_urn="urn:adsk.eagle:package:16378559/2" technology="_" value="7.5K"/>
-<part name="R3" library="Resistor" deviceset="R-US" device="CHIP-0805(2012-METRIC)" package3d_urn="urn:adsk.eagle:package:16378559/2" technology="_" value="7.5K"/>
+<part name="R1" library="Resistor" deviceset="R-US" device="CHIP-0805(2012-METRIC)" package3d_urn="urn:adsk.eagle:package:16378559/2" technology="_" value="6K8"/>
+<part name="R3" library="Resistor" deviceset="R-US" device="CHIP-0805(2012-METRIC)" package3d_urn="urn:adsk.eagle:package:16378559/2" technology="_" value="6K8"/>
 <part name="SUPPLY5" library="Tutorial - Fusion 360" deviceset="GND" device=""/>
 <part name="SUPPLY6" library="Tutorial - Fusion 360" deviceset="GND" device=""/>
 <part name="SUPPLY2" library="Power_Symbols" deviceset="GND" device="" value="GND"/>

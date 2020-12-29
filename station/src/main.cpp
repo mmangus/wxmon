@@ -8,10 +8,10 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include <Wire.h>
-#include <wxsta.h>  // configuration loaded from header
 
-#define SEALEVELPRESSURE_HPA 1013.25
-#define WAKEUP_INTERVAL_US 6e7 //9e8  // 15 minutes
+#include <../../display/src/display.h>  // configuration loaded from header
+
+#define WAKEUP_INTERVAL_US 3e8  // 5 minutes
 
 
 Adafruit_BME280 bme;
@@ -29,12 +29,25 @@ void setup()
 
   pinMode(LED_BUILTIN, OUTPUT);
   WiFi.hostname("wxsta");
-  WiFi.begin(SSID, PASSWORD);
+  WiFi.begin(DISPLAY_SSID, DISPLAY_PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
     digitalWrite(LED_BUILTIN, LOW);
     delay(100);
   }
   digitalWrite(LED_BUILTIN, HIGH);
+
+  timeClient.begin();
+  uint32 sleptFor = 0;
+  uint32 lastTime;
+  timeClient.update();
+  uint32 epochTime = timeClient.getEpochTime();
+  if (ESP.getResetInfoPtr()->reason == REASON_DEEP_SLEEP_AWAKE) 
+  {
+    ESP.rtcUserMemoryRead(0, &lastTime, sizeof(lastTime));
+    ESP.rtcUserMemoryWrite(0,  &epochTime, sizeof(epochTime));
+    sleptFor = epochTime - lastTime - millis() / 1000.;
+  }
+  
   if (!wifiSerial.connected()) {
     wifiSerial.stop();
     wifiSerial.connect("fossil.local", 3000);
@@ -57,9 +70,7 @@ void setup()
   );
   
   mcp3002.begin(0);  // move SPI CS pin to GPIO0 so it can pull high (GPIO15 must pull low)
-  
-  timeClient.begin();
-
+ 
   float temp = bme.readTemperature();
   float press = bme.readPressure() / 100.f;
   float humidity = bme.readHumidity();
@@ -67,17 +78,6 @@ void setup()
   float ch0 = mcp3002.analogRead(0) / 1023.f * 100.f;
   float ch1 = mcp3002.analogRead(1) / 1023.f * 100.f;
 
-  timeClient.update();
-  uint32 epochTime = timeClient.getEpochTime();
-  rst_info *resetInfo = ESP.getResetInfoPtr();
-  uint32 sleptFor = 0;
-  uint32 lastTime;
-  if (resetInfo->reason == REASON_DEEP_SLEEP_AWAKE) 
-  {
-     ESP.rtcUserMemoryRead(0, &lastTime, sizeof(lastTime));
-     sleptFor = epochTime - lastTime - millis()/1000.;
-  }
-  ESP.rtcUserMemoryWrite(0,  &epochTime, sizeof(epochTime));
   wifiSerial.println("********************");
   wifiSerial.println(timeClient.getFormattedTime());
   wifiSerial.printf("CH0      = %.2f%%\n", ch0);
@@ -85,7 +85,7 @@ void setup()
   wifiSerial.printf("Temp.    = %.2f *C\n", temp);
   wifiSerial.printf("Pressure = %.2f hPa\n", press); 
   wifiSerial.printf("Humidity = %.2f%%\n", humidity);
-  wifiSerial.printf("Slept for %d\n", sleptFor); // TODO
+  wifiSerial.printf("%d seconds since last reading\n", sleptFor); // TODO
   wifiSerial.stop();
   delay(250); // this delay seems to solve recon issues, check for serial stop instead?
   //httpServer.handleClient();
