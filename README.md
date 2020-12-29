@@ -7,7 +7,7 @@ Weather monitor using the ESP12E MCU and BME280 environmental sensor, comprised 
 - [X] Schematic
 - [X] PCB Layout
 - [X] Gerber CAM files (zipped up and ready to upload to JLC PCB, OSH Park, etc)
-- [X] Software created using PlatformIO/Arduino
+- [ ] Software created using PlatformIO/Arduino - WIP
 - [ ] Enclosure STL files
 
 ## Display module
